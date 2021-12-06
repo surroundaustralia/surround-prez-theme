@@ -21,6 +21,10 @@ jobs:
         run: "appName=$(sed -n -e 's/^.*appName: \\(.*\\)/\\1/p' config.yaml)"
       - name: Temporarily remove theme variable
         run: sed -e 's/THEME_VOLUME:/# THEME_VOLUME:/g' deploy/new_kube-manifest.yaml > deploy/new_kube-manifest-replace.yaml
+      - name: Install AWS CLI
+        run: |
+          apt update
+          apt install -y awscli
       - name: Deploy temp manifest
         uses: actions-hub/kubectl@master
         env:
