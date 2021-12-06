@@ -47,7 +47,7 @@ spec:
     spec:
       containers:
         - name: #{APP_NAME}#-prez
-          image: prez:#{VERSION}#
+          image: surroundaustralia/prez:#{VERSION}#
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -62,7 +62,7 @@ spec:
             - configMapRef:
                 name: #{APP_NAME}#-prez-config
           volumeMounts:
-            - mountPath: /app/Prez/prez/#{THEME_VOLUME}#
+            - mountPath: /app/prez/#{THEME_VOLUME}#
               name: #{THEME_VOLUME}#
       volumes:
         - name: #{THEME_VOLUME}#

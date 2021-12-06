@@ -1,7 +1,7 @@
 services:
   prez:
     container_name: #{APP_NAME}#-prez
-    image: prez:#{VERSION}#
+    image: surroundaustralia/prez:#{VERSION}#
     ports:
       - "8000:8000"
     environment:
@@ -18,4 +18,4 @@ services:
       SEARCH_ENDPOINTS: #{SEARCH_ENDPOINTS}#
       SYSTEM_INFO: #{SYSTEM_INFO}#
     volumes:
-      - ../#{THEME_VOLUME}#:/app/Prez/prez/#{THEME_VOLUME}#
+      - ../#{THEME_VOLUME}#:/app/prez/#{THEME_VOLUME}#

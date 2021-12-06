@@ -1,6 +1,6 @@
 {
     "name": "#{APP_NAME}#",
-    "image": "prez:#{VERSION}#",
+    "image": "surroundaustralia/prez:#{VERSION}#",
     "essential": true,
     "portMappings": [
         {

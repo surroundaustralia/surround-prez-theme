@@ -1,0 +1,59 @@
+name: Deploy Changes
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Install python dependencies
+        run: |
+          python -m pip install -U pip
+          pip install poetry
+          poetry install
+      - name: Token replacement
+        run: python pipeline_script.py
+      - name: Get app name
+        run: "appName=$(sed -n -e 's/^.*appName: \\(.*\\)/\\1/p' config.yaml)"
+      - name: Temporarily remove theme variable
+        run: sed -e 's/THEME_VOLUME:/# THEME_VOLUME:/g' deploy/new_kube-manifest.yaml > deploy/new_kube-manifest-replace.yaml
+      - name: Deploy temp manifest
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        with:
+          args: apply -f deploy/new_kube-manifest-replace.yaml --validate=false
+      - name: Restart deployment
+        uses: actions-hub/kubectl@master
+        with:
+          args: rollout restart deployment ${appName}-prez-deployment
+      - name: Get newest pod name
+        uses: actions-hub/kubectl@master
+        with:
+          args: get pod --sort-by=.metadata.creationTimestamp -l app=$appName -o jsonpath="{.items[-1:].metadata.name}" > podName.txt
+      - name: Save pod name to variable
+        run: podName=$(cat podName.txt)
+      - name: Exec into pod
+        uses: actions-hub/kubectl@master
+        with:
+          args: exec -it $podName /bin/bash --
+      - name: Clear mounted folder
+        run: |
+          rm -rf /app/prez/theme/*
+          exit
+      - name: Copy theme files
+        uses: actions-hub/kubectl@master
+        with:
+          args: cp theme/* ${podName}:/app/prez/theme/
+      - name: Deploy real manifest
+        uses: actions-hub/kubectl@master
+        with:
+          args: apply -f deploy/new_kube-manifest.yaml --validate=false
+      - name: Restart deployment
+        uses: actions-hub/kubectl@master
+        with:
+          args: rollout restart deployment ${appName}-prez-deployment

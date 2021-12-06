@@ -40,4 +40,4 @@ systemInfo:
 appName: surround
 deploymentMethod: kubernetes # docker, kubernetes or ecs
 storageClass: ebs-sc # for kubernetes deployment
-version: latest
+version: 0.1.0

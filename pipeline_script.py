@@ -44,33 +44,19 @@ def config_val(key: str) -> str:
     k = config[key]
     deploy_type = config["deploymentMethod"]
     if k is None:
-        if deploy_type == "kubernetes":
-            return '""'
-        elif deploy_type == "ecs":
-            return ""
-        else:  # docker
-            return '""'
+        return ""
     elif isinstance(k, bool):
-        if deploy_type == "kubernetes":
+        if deploy_type in ["kubernetes", "docker"]:
             return '"' + str(k) + '"'
-        elif deploy_type == "ecs":
+        else:  # ecs
             return str(k)
-        else:  # docker
-            return '"' + str(k) + '"'
     elif isinstance(k, int):
-        if deploy_type == "kubernetes":
-            return str(k)
-        elif deploy_type == "ecs":
-            return str(k)
-        else:  # docker
-            return str(k)
+        return str(k)
     elif isinstance(k, list) or isinstance(k, dict):
-        if deploy_type == "kubernetes":
+        if deploy_type in ["kubernetes", "docker"]:
             return "'" + json.dumps(k) + "'"
-        elif deploy_type == "ecs":
+        else:  # ecs
             return str(k)
-        else:  # docker
-            return "'" + json.dumps(k) + "'"
     else:  # str
         return k
 
@@ -81,6 +67,12 @@ with open(f"deploy/{deploy_file}", "r") as f:
 # need validation for each config var
 for key in config.keys():
     deploy_str = deploy_str.replace(f"#{{{config_name(key)}}}#", config_val(key))
+
+# remove http:// for kubernetes ingress host
+if config["deploymentMethod"] == "kubernetes":
+    old_host = re.findall("- host: (.*)", deploy_str)[0]
+    new_host = old_host.split("//")[1]
+    deploy_str = deploy_str.replace(f"- host: {old_host}", f"- host: {new_host}")
 
 with open(f"deploy/new_{deploy_file}", "w") as f:
     f.write(deploy_str)
