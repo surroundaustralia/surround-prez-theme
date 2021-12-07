@@ -25,7 +25,7 @@ jobs:
         run: "echo ::set-output name=appName::$(sed -n -e 's/^appName: \\(\\S*\\)/\\1/p' config.yaml)"
         id: get_app_name
       - name: Get deploy method
-        run: "echo ::set-output name=deployMethod::$(sed -n -e 's/^deploymentMethod: \\(docker|kubernetes|ecs\\).*/\\1/p' config.yaml)"
+        run: "echo ::set-output name=deployMethod::$(sed -n -e 's/^deploymentMethod: \\(\\w*\\).*/\\1/p' config.yaml)"
         id: get_deploy_method
       - name: Is kubernetes
         run: |
