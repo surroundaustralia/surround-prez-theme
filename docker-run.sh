@@ -1,9 +1,9 @@
 # for local testing
 
-# for WSL2, run `ip addr`, use IP inet under eth0 for local sparql endpoint
+# (NOTE: for running triplestore in WSL2, run `ip addr`, use IP inet under eth0 for local SPARQL_ENDPOINT IP)
 
-docker run --name prez-theme \
--v <path_to_folder>/theme-template/theme:/app/Prez/prez/theme \
+docker run --name <container_name> \
+-v <abs_repo_path>/theme:/app/prez/theme \
 -p 8000:8000 \
--e SPARQL_ENDPOINT=http://<wsl_ip>:7200/repositories/vocprez-test \
-prez:latest
+--env-file .env \
+surroundaustralia/prez:0.1.0

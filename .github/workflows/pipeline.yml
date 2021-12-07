@@ -27,10 +27,6 @@ jobs:
       - name: Get deploy method
         run: "echo ::set-output name=deployMethod::$(sed -n -e 's/^deploymentMethod: \\(\\w*\\).*/\\1/p' config.yaml)"
         id: get_deploy_method
-      - name: Is kubernetes
-        run: |
-          echo ${{ steps.get_deploy_method.outputs.deployMethod }}
-          echo ${{ steps.get_deploy_method.outputs.deployMethod == 'kubernetes' }}
       # === kubernetes ===
       - name: Temporarily remove theme variable
         if: ${{ steps.get_deploy_method.outputs.deployMethod == 'kubernetes' }}
