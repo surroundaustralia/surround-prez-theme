@@ -22,10 +22,10 @@ jobs:
           SPARQL_USERNAME: ${{ secrets.SPARQL_USERNAME }}
           SPARQL_PASSWORD: ${{ secrets.SPARQL_PASSWORD }}
       - name: Get app name
-        run: "echo ::set-output name=appName::$(sed -n -e 's/^.*appName: \\(.*\\)/\\1/p' config.yaml)"
+        run: "echo ::set-output name=appName::$(sed -n -e 's/^appName: \\(\\S*\\)/\\1/p' config.yaml)"
         id: get_app_name
       - name: Get deploy method
-        run: "echo ::set-output name=deployMethod::$(sed -n -e 's/^.*deploymentMethod: \\(.*\\)/\\1/p' config.yaml)"
+        run: "echo ::set-output name=deployMethod::$(sed -n -e 's/^deploymentMethod: \\(docker|kubernetes|ecs\\)/\\1/p' config.yaml)"
         id: get_deploy_method
       # === kubernetes ===
       - name: Temporarily remove theme variable
