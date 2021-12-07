@@ -17,6 +17,10 @@ jobs:
           poetry install
       - name: Token replacement
         run: python pipeline_script.py
+        env:
+          SPARQL_ENDPOINT: ${{ secrets.SPARQL_ENDPOINT }}
+          SPARQL_USERNAME: ${{ secrets.SPARQL_USERNAME }}
+          SPARQL_PASSWORD: ${{ secrets.SPARQL_PASSWORD }}
       - name: Get app name
         run: "appName=$(sed -n -e 's/^.*appName: \\(.*\\)/\\1/p' config.yaml)"
       - name: Temporarily remove theme variable
@@ -46,7 +50,7 @@ jobs:
       - name: Exec into pod
         uses: kodermax/kubectl-aws-eks@master
         with:
-          args: exec -it $podName /bin/bash --
+          args: exec -it $podName -- /bin/bash
       - name: Clear mounted folder
         run: |
           rm -rf /app/prez/theme/*
