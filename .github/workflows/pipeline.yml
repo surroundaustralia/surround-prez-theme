@@ -22,7 +22,8 @@ jobs:
           SPARQL_USERNAME: ${{ secrets.SPARQL_USERNAME }}
           SPARQL_PASSWORD: ${{ secrets.SPARQL_PASSWORD }}
       - name: Get app name
-        run: "appName=$(sed -n -e 's/^.*appName: \\(.*\\)/\\1/p' config.yaml)"
+        run: "echo ::set-output name=appName::$(sed -n -e 's/^.*appName: \\(.*\\)/\\1/p' config.yaml)"
+        id: get_app_name
       - name: Temporarily remove theme variable
         run: sed -e 's/THEME_VOLUME:/# THEME_VOLUME:/g' deploy/new_kube-manifest.yaml > deploy/new_kube-manifest-replace.yaml
       - name: Configure AWS credentials
@@ -40,17 +41,18 @@ jobs:
       - name: Restart deployment
         uses: kodermax/kubectl-aws-eks@master
         with:
-          args: rollout restart deployment ${appName}-prez-deployment
+          args: rollout restart deployment ${{ steps.get_app_name.outputs.appName }}-prez-deployment
       - name: Get newest pod name
         uses: kodermax/kubectl-aws-eks@master
         with:
-          args: get pod --sort-by=.metadata.creationTimestamp -l app=$appName -o jsonpath="{.items[-1:].metadata.name}" > podName.txt
+          args: get pod --sort-by=.metadata.creationTimestamp -l app=${{ steps.get_app_name.outputs.appName }} -o jsonpath="{.items[-1:].metadata.name}" > podName.txt
       - name: Save pod name to variable
-        run: podName=$(cat podName.txt)
+        run: echo ::set-output name=podName::$(cat podName.txt)
+        id: save_pod_name
       - name: Exec into pod
         uses: kodermax/kubectl-aws-eks@master
         with:
-          args: exec -it $podName -- /bin/bash
+          args: exec -it ${{ steps.save_pod_name.outputs.podName }} -- /bin/bash
       - name: Clear mounted folder
         run: |
           rm -rf /app/prez/theme/*
@@ -58,7 +60,7 @@ jobs:
       - name: Copy theme files
         uses: kodermax/kubectl-aws-eks@master
         with:
-          args: cp theme/* ${podName}:/app/prez/theme/
+          args: cp theme/* ${{ steps.save_pod_name.outputs.podName }}:/app/prez/theme/
       - name: Deploy real manifest
         uses: kodermax/kubectl-aws-eks@master
         with:
@@ -66,4 +68,4 @@ jobs:
       - name: Restart deployment
         uses: kodermax/kubectl-aws-eks@master
         with:
-          args: rollout restart deployment ${appName}-prez-deployment
+          args: rollout restart deployment ${{ steps.get_app_name.outputs.appName }}-prez-deployment
