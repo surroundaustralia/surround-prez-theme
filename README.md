@@ -45,7 +45,7 @@ Currently, only the Kubernetes deployment option is supported, where EKS is used
 
 The required repository secrets are:
 
-- `KUBE_CONFIG_DATA`
+- `KUBE_CONFIG`
     - Obtained by locally running:
         ```bash
         cat $HOME/.kube/config | base64 
@@ -53,6 +53,8 @@ The required repository secrets are:
         - Note that any AWS_PROFILEs in this config should be removed beforehand
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
+
+Along with the required secrets for Prez itself (`SPARQL_ENDPOINT` (required), `SPARQL_USERNAME` & `SPARQL_PASSWORD`).
 
 ### BitBucket Pipelines
 Not yet implemented.
