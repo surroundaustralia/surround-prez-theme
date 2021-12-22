@@ -1,4 +1,4 @@
-# Prez Theme Template
+# SURROUND Prez Theme
 This repo is used for deploying Prez instances.
 
 ## Configuration

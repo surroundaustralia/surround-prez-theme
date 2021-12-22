@@ -6,6 +6,7 @@
     --link: var(--primary);
     --link-hover: #8524ff;
     --nav-color: var(--primary);
+    --btn-hover: #eb484d;
     --header-bg: #231f20;
     --footer-bg: #dfe3e5;
     --table-row-bg: #eeeeee;
@@ -83,8 +84,21 @@ table.props-table tbody>tr:nth-child(2n + 1) {
     margin-right: 16px;
 }
 
-@media screen and (max-width: 375px) {
+.alt-quick-link > a,
+a.search-result-instance {
+    background-color: var(--secondary);
+}
+
+@media screen and (max-width: 420px) {
+    #header-content {
+        flex-direction: column;
+    }
+
     img#header-logo, img#footer-logo {
         max-width: 100px;
+    }
+
+    #footer-content {
+        flex-direction: column;
     }
 }
