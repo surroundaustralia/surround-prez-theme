@@ -5,15 +5,22 @@ import re
 import yaml
 
 # find & replace tokens for repo envs (sparql creds)
-SPARQL_ENDPOINT = os.environ.get("SPARQL_ENDPOINT", "")
-SPARQL_USERNAME = os.environ.get("SPARQL_USERNAME", "")
-SPARQL_PASSWORD = os.environ.get("SPARQL_PASSWORD", "")
-
 with open("config.yaml", "r") as f:
     c = f.read()
-c = c.replace("#{SPARQL_ENDPOINT}#", SPARQL_ENDPOINT)
-c = c.replace("#{SPARQL_USERNAME}#", SPARQL_USERNAME)
-c = c.replace("#{SPARQL_PASSWORD}#", SPARQL_PASSWORD)
+
+for prez in ["VocPrez", "SpacePrez", "CatPrez", "TimePrez"]:
+    c = c.replace(
+        f"#{{{prez.upper()}_SPARQL_ENDPOINT}}#",
+        os.environ.get(f"{prez.upper()}_SPARQL_ENDPOINT", ""),
+    )
+    c = c.replace(
+        f"#{{{prez.upper()}_SPARQL_USERNAME}}#",
+        os.environ.get(f"{prez.upper()}_SPARQL_USERNAME", ""),
+    )
+    c = c.replace(
+        f"#{{{prez.upper()}_SPARQL_PASSWORD}}#",
+        os.environ.get(f"{prez.upper()}_SPARQL_PASSWORD", ""),
+    )
 
 # read config.yaml
 config = yaml.load(c, Loader=yaml.Loader)
@@ -31,6 +38,15 @@ else:
     raise ValueError(
         "Deployment method must be one of: 'kubernetes', 'ecs' or 'docker'"
     )
+
+
+def none_to_empty_str(k: dict) -> None:
+    """Converts NoneType dict values to empty strings recursively"""
+    for key, val in k.items():
+        if val is None:
+            k[key] = ""
+        elif isinstance(val, dict):
+            none_to_empty_str(val)
 
 
 def config_name(name: str) -> str:
@@ -53,6 +69,8 @@ def config_val(key: str) -> str:
     elif isinstance(k, int):
         return str(k)
     elif isinstance(k, list) or isinstance(k, dict):
+        if isinstance(k, dict):
+            none_to_empty_str(k)
         if deploy_type in ["kubernetes", "docker"]:
             return "'" + json.dumps(k) + "'"
         else:  # ecs

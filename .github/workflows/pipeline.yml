@@ -18,9 +18,12 @@ jobs:
       - name: Token replacement
         run: python pipeline_script.py
         env:
-          SPARQL_ENDPOINT: ${{ secrets.SPARQL_ENDPOINT }}
-          SPARQL_USERNAME: ${{ secrets.SPARQL_USERNAME }}
-          SPARQL_PASSWORD: ${{ secrets.SPARQL_PASSWORD }}
+          VOCPREZ_SPARQL_ENDPOINT: ${{ secrets.VOCPREZ_SPARQL_ENDPOINT }}
+          VOCPREZ_SPARQL_USERNAME: ${{ secrets.VOCPREZ_SPARQL_USERNAME }}
+          VOCPREZ_SPARQL_PASSWORD: ${{ secrets.VOCPREZ_SPARQL_PASSWORD }}
+          SPACEPREZ_SPARQL_ENDPOINT: ${{ secrets.SPACEPREZ_SPARQL_ENDPOINT }}
+          SPACEPREZ_SPARQL_USERNAME: ${{ secrets.SPACEPREZ_SPARQL_USERNAME }}
+          SPACEPREZ_SPARQL_PASSWORD: ${{ secrets.SPACEPREZ_SPARQL_PASSWORD }}
       - name: Get app name
         run: "echo ::set-output name=appName::$(sed -n -e 's/^appName: \\(\\S*\\)/\\1/p' config.yaml)"
         id: get_app_name

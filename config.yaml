@@ -2,12 +2,28 @@ themeVolume: theme # no trailing slash
 sidenav: true
 enabledPrezs:
   - VocPrez
-sparqlEndpoint: #{SPARQL_ENDPOINT}#
-sparqlUsername: #{SPARQL_USERNAME}#
-sparqlPassword: #{SPARQL_PASSWORD}#
+  - SpacePrez
+sparqlCreds:
+  VocPrez:
+    SPARQL_ENDPOINT: #{VOCPREZ_SPARQL_ENDPOINT}#
+    SPARQL_USERNAME: #{VOCPREZ_SPARQL_USERNAME}#
+    SPARQL_PASSWORD: #{VOCPREZ_SPARQL_PASSWORD}#
+  SpacePrez:
+    SPARQL_ENDPOINT: #{SPACEPREZ_SPARQL_ENDPOINT}#
+    SPARQL_USERNAME: #{SPACEPREZ_SPARQL_USERNAME}#
+    SPARQL_PASSWORD: #{SPACEPREZ_SPARQL_PASSWORD}#
+  CatPrez:
+    SPARQL_ENDPOINT: null
+    SPARQL_USERNAME: null
+    SPARQL_PASSWORD: null
+  TimePrez:
+    SPARQL_ENDPOINT: null
+    SPARQL_USERNAME: null
+    SPARQL_PASSWORD: null
 port: 8000
 demo: true
 debug: true
+allowPartialResults: true
 searchEndpoints:
   - name: GA VocPrez
     url: http://ga.surroundaustralia.com/sparql/
@@ -20,24 +36,27 @@ searchEndpoints:
   - name: CSIRO VocPrez
     url: http://csiro.surroundaustralia.com/sparql/
 systemUri: http://prez.surroundaustralia.com
-dataUri: http://example.com
 systemInfo:
   Prez:
-    title: SURROUND Vocabulary Registry
-    desc: These vocabs are published by...
+    title: SURROUND Prez
+    desc: Prez demo instance for SURROUND Australia
   VocPrez:
-    title: SURROUND Vocabulary Registry
-    desc: These vocabs are published by...
+    title: SURROUND Vocabularies
+    desc: Demo vocabularies
+    data_uri: http://exampledata.org
+  SpacePrez:
+    title: SURROUND Floods
+    desc: Floods spatial data
+    data_uri: http://exampledata.org
   CatPrez:
     title: null
     desc: null
+    data_uri:
   TimePrez:
     title: null
     desc: null
-  SpacePrez:
-    title: null
-    desc: null
+    data_uri:
 appName: surround
 deploymentMethod: kubernetes # docker, kubernetes or ecs
 storageClass: ebs-sc # for kubernetes deployment
-version: 0.1.2
+version: 0.2.0
