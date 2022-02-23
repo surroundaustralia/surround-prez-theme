@@ -45,7 +45,7 @@ systemInfo:
     desc: Demo vocabularies
     data_uri: http://exampledata.org
   SpacePrez:
-    title: SURROUND Floods
+    title: SURROUND Spatial Data
     desc: Floods spatial data
     data_uri: http://exampledata.org
   CatPrez:
