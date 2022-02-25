@@ -46,7 +46,7 @@ spec:
       containers:
         - name: #{APP_NAME}#-prez
           image: surroundaustralia/prez:#{VERSION}#
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           resources:
             requests:
               memory: "64Mi"
