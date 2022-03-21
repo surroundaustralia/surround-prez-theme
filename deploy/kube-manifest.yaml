@@ -107,10 +107,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - #{SYSTEM_URI}#
+        - #{SYSTEM_URI_HOST}#
       secretName: #{APP_NAME}#-prez-cert
   rules:
-    - host: #{SYSTEM_URI}#
+    - host: #{SYSTEM_URI_HOST}#
       http:
         paths:
           - pathType: Prefix

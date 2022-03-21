@@ -25,6 +25,9 @@ for prez in ["VocPrez", "SpacePrez", "CatPrez", "TimePrez"]:
 # read config.yaml
 config = yaml.load(c, Loader=yaml.Loader)
 
+# remove http or https from system URI to use in host values for kubernetes ingress
+config["systemUriHost"] = config.get("systemUri").split("//")[1]
+
 # find & replace remaining tokens depending on deployment method (& pipeline method?)
 deploy_file = ""
 deploy_str = ""
@@ -87,10 +90,10 @@ for key in config.keys():
     deploy_str = deploy_str.replace(f"#{{{config_name(key)}}}#", config_val(key))
 
 # remove http:// for kubernetes ingress host
-if config["deploymentMethod"] == "kubernetes":
-    old_host = re.findall("- host: (.*)", deploy_str)[0]
-    new_host = old_host.split("//")[1]
-    deploy_str = deploy_str.replace(f"- host: {old_host}", f"- host: {new_host}")
+# if config["deploymentMethod"] == "kubernetes":
+#     old_host = re.findall("- host: (.*)", deploy_str)[0]
+#     new_host = old_host.split("//")[1]
+#     deploy_str = deploy_str.replace(f"- host: {old_host}", f"- host: {new_host}")
 
 with open(f"deploy/new_{deploy_file}", "w") as f:
     f.write(deploy_str)
