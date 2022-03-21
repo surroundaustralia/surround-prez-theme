@@ -35,7 +35,7 @@ searchEndpoints:
     url: http://icsm.surroundaustralia.com/sparql/
   - name: CSIRO VocPrez
     url: http://csiro.surroundaustralia.com/sparql/
-systemUri: http://prez.surroundaustralia.com
+systemUri: https://prez.surroundaustralia.com
 systemInfo:
   Prez:
     title: SURROUND Prez
@@ -57,6 +57,7 @@ systemInfo:
     desc: null
     data_uri:
 appName: surround
+email: jamie.feiss@surroundaustralia.com
 deploymentMethod: kubernetes # docker, kubernetes or ecs
 storageClass: ebs-sc # for kubernetes deployment
-version: 0.2.0
+version: 0.2.1

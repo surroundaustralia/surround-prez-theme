@@ -80,6 +80,22 @@ spec:
       port: 80
       targetPort: #{PORT}#
 ---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: #{APP_NAME}#-prez-issuer
+  namespace: cert-manager
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: #{EMAIL}#
+    privateKeySecretRef:
+      name: #{APP_NAME}#-prez-issuer
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -87,7 +103,12 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/proxy-buffer-size: 8k
+    cert-manager.io/cluster-issuer: "#{APP_NAME}#-prez-issuer"
 spec:
+  tls:
+    - hosts:
+        - #{SYSTEM_URI}#
+      secretName: #{APP_NAME}#-prez-cert
   rules:
     - host: #{SYSTEM_URI}#
       http:
